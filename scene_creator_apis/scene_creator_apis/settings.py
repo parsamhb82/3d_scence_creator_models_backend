@@ -11,9 +11,16 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import environ, os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))  # loads .env
+
+OPEN_CLIP_MODEL_PATH = env("OPEN_CLIP_MODEL_PATH")
+IMAGE_INDEX_PATH = env("IMAGE_INDEX_PATH")
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mesh_detector',
 ]
 
 MIDDLEWARE = [
