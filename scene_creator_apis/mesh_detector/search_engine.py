@@ -46,6 +46,12 @@ def _lazy_init():
 
     _initialized = True
 
+def get_image_id(image_path: str) -> str:
+    try:
+        return image_path.split("/")[-1].split(".")[0]
+    except ValueError:
+        return -1
+
 def search_images(query: str, top_k: int = 3):
     """Returns list of (image_path, score) tuples for a text query."""
     _lazy_init()
@@ -64,5 +70,5 @@ def search_images(query: str, top_k: int = 3):
         values, indices = torch.topk(similarity[0], k=min(top_k, similarity.shape[-1]))
 
         # Convert to float & list
-        results = [( _image_paths[i], float(values[j].item()) ) for j, i in enumerate(indices)]
+        results = [(get_image_id(_image_paths[i]), float(values[j].item())) for j, i in enumerate(indices)]
         return results
