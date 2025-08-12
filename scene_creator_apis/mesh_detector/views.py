@@ -12,17 +12,17 @@ def image_search(request):
     except json.JSONDecodeError:
         return HttpResponseBadRequest("Invalid JSON body")
 
-    q = (data.get("q") or "").strip()
-    if not q:
-        return JsonResponse({"error": "Missing field 'q'."}, status=400)
+    prompt = (data.get("prompt") or "").strip()
+    if not prompt:
+        return JsonResponse({"error": "Missing field 'prompt'."}, status=400)
 
     try:
-        k = int(data.get("k", 3))
+        top_k = int(data.get("top_k", 3))
     except (TypeError, ValueError):
-        return JsonResponse({"error": "Field 'k' must be an integer."}, status=400)
+        return JsonResponse({"error": "Field 'top_k' must be an integer."}, status=400)
 
-    k = max(1, min(k, 50))
+    top_k = max(1, min(top_k, 50))
 
-    results = search_images(q, top_k=k)
+    results = search_images(prompt, top_k=top_k)
     payload = [{"path": path, "score": float(score)} for path, score in results]
-    return JsonResponse({"query": q, "results": payload})
+    return JsonResponse({"prompt": prompt, "results": payload})
